@@ -17,7 +17,7 @@ class Api {
   }
 
   getProfile() {
-    return axios.get<User>("/auth/profile");
+    return axios.get<User>("/profile");
   }
 
   signIn(params: { username: string; password: string }) {

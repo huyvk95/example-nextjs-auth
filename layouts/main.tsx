@@ -1,25 +1,42 @@
 import Link from "next/link";
-import React, { PropsWithChildren } from "react";
+import React, { PropsWithChildren, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+
+import { userActions, userSelector } from "../redux";
 
 export const MainLayout: React.FC<PropsWithChildren<unknown>> = ({
   children,
   ...props
-}) => (
-  <div {...props}>
-    <div>
+}) => {
+  const dispatch = useDispatch<any>();
+  const transactionLogout = useSelector(userSelector.selectTransactionLogout);
+
+  useEffect(() => {
+    if (transactionLogout.type === "finish")
+      dispatch(userActions.resetTransactionLogin());
+  }, [transactionLogout]);
+
+  const onClickLogout = () => {
+    dispatch(userActions.logout());
+  };
+
+  return (
+    <div {...props}>
       <div>
-        <Link href={"/"}>Home</Link>
+        <div>
+          <Link href={"/"}>Home</Link>
+        </div>
+        <div>
+          <Link href={"/login"}>Login</Link>
+        </div>
+        <div>
+          <Link href={"/profile"}>Profile</Link>
+        </div>
+        <div>
+          <a onClick={onClickLogout}>Logout</a>
+        </div>
       </div>
-      <div>
-        <Link href={"/login"}>Login</Link>
-      </div>
-      <div>
-        <Link href={"/profile"}>Profile</Link>
-      </div>
-      <div>
-        <a>Logout</a>
-      </div>
+      <div>{children}</div>
     </div>
-    <div>{children}</div>
-  </div>
-);
+  );
+};

@@ -1,12 +1,28 @@
 import type { NextPage } from "next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+
 import { MainLayout } from "../layouts";
+import { authMiddleware } from "../middlewares";
+import { userActions, userSelector } from "../redux";
+
+const { AuthContent, authenticateServerSide } = authMiddleware();
 
 const Login: NextPage = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const dispatch = useDispatch<any>();
+  const transactionLogin = useSelector(userSelector.selectTransactionLogin);
+  const [username, setUsername] = useState("huyvk95");
+  const [password, setPassword] = useState("12345678");
 
-  const onClickSignIn = () => {};
+  useEffect(() => {
+    if (transactionLogin.type === "finish")
+      dispatch(userActions.resetTransactionLogin());
+  }, [transactionLogin]);
+
+  const onClickSignIn = () => {
+    dispatch(userActions.signIn({ username, password }));
+  };
 
   const onClickSignUp = () => {};
 
@@ -30,4 +46,6 @@ const Login: NextPage = () => {
   );
 };
 
-export default Login;
+export const getServerSideProps = authenticateServerSide();
+
+export default AuthContent(Login);

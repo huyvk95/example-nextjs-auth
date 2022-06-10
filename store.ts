@@ -35,6 +35,8 @@ export const store = configureStore({
   reducer,
 });
 
+store.subscribe(() => console.log(store.getState()));
+
 // > Type
 // * Hook type
 export type AppDispatch = typeof store.dispatch;
